@@ -1,40 +1,67 @@
 import { useState } from "react"
+import { db } from "../firebase_config";
+import firebase from "firebase";
 
 const AddTask = ({onAdd}) => {
-    const [text , setText] = useState('')
-    const [day , setDay] = useState('') 
-    const [reminder , setReminder] = useState(false)
+    const [data , setData] = useState({
+        text: "",
+        day:"",
+        reminder : false
+    })
+    let name , value ;
+    const getData = (event) => {
+        name = event.target.name ;
+        value = event.target.value ;
 
-    const onSubmit = (e) => {
-        e.preventDefault()
+        setData({...data , [name]:value});
+    };
 
-        if(!text){
-            alert('Please Add Task')
-            return
+    const postData  = (e) => {
+        e.preventDefault() ;
+
+        const { text , day ,reminder } = data ;
+        
+        if ( text && day ) {
+            db.collection("DayPlanner").add({
+                text , 
+                reminder ,
+                day ,
+                timestamp : firebase.firestore.FieldValue.serverTimestamp() 
+            })
+            setData({
+                text: "",
+                day:"",
+                reminder : false  });
+
+
+
+        }else{
+            alert('Please Add all Task  info') ;
         }
+        
+        
 
-        onAdd({text , day , reminder}) 
-        setText('')
-        setDay('')
-        setReminder(false)
+      
+    
+     
     }
 
     return (
-        <form className = 'add-form' onSubmit = {onSubmit} >
+        <form className = 'add-form' >
             <div className = 'form-control'>
                 <label>Task </label>
-                <input type="text" placeholder='Add Task' value = {text} onChange ={ (e) => setText(e.target.value) } />
+                <input type="text" placeholder='Add Task' name="text" value = {data.text} onChange ={ getData } />
             </div>
             <div className = 'form-control'>
                 <label>Day and Time</label>
-                <input type="text" placeholder='Add Day and Time' value = {day} onChange ={ (e) => setDay(e.target.value) } />
+                <input type="text" placeholder='Add Day and Time' name="day"  value = {data.day} onChange ={getData } />
             </div>
             <div className = 'form-control form-control-check'>
-                <label>Set Reminder</label>
-                <input type='checkbox' checked = {reminder} value = {reminder} onChange ={ (e) => setReminder(e.currentTarget.checked) } />
+                <label>Important ?</label>
+                <input type='checkbox' name="reminder"   value = {data.reminder} onChange ={ getData } />
             </div>
 
-            <input type="submit" value='Save Task'className = 'btn btn-block' />
+            <input type="submit" value='Save Task' onClick ={postData}   className = 'btn btn-block' />
         </form>
     )
 }

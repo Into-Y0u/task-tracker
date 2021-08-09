@@ -13,9 +13,6 @@ const Header = ({title , onAdd , showAdd}) => {
     )
 }
 
-// const headingStyles = {
-//     color : 'red' ,
-//     backgroundColor  : 'black'
-// }
+
 
 export default Header
