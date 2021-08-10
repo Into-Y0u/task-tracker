@@ -3,6 +3,7 @@ import Tasks from './components/Tasks'
 import { useEffect, useState } from "react"
 import AddTask from './components/AddTask'
 import { db } from './firebase_config'
+import Tilt from 'react-vanilla-tilt' ;
 
 const App = () => {
   const [showAddTask , setShowAddTask ] = useState(false)
@@ -44,14 +45,17 @@ const App = () => {
 
 
   return (
-    <div className = 'container'>
-      <Header onAdd = {() => setShowAddTask(!showAddTask)} showAdd = {showAddTask} />
-      {showAddTask && <AddTask onAdd= {addTask} />}
-      {tasks.length > 0 ? <Tasks tasks={tasks} onDelete = {deleteTask} 
-      // onToggle = {toggleReminder} 
-      /> : "You have no Task left , Add some new ? " }
-      
-    </div>
+    <Tilt style = {{padding : 0 , margin : "auto" , maxWidth: "500px" , alignItems: "center"  }}   >
+      <div className = 'container'>
+          <Header onAdd = {() => setShowAddTask(!showAddTask)} showAdd = {showAddTask} />
+          {showAddTask && <AddTask onAdd= {addTask} />}
+          {tasks.length > 0 ? <Tasks tasks={tasks} onDelete = {deleteTask} 
+          // onToggle = {toggleReminder} 
+          /> : "You have no Task left , Add some new ? " }
+        
+      </div>
+    </Tilt>
+    
   )
 }
 
